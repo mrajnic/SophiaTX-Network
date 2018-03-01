@@ -2949,7 +2949,6 @@ signed_transaction content_cancellation(string author,
    }
 
    signed_transaction send_trans(const string& MethodType,
-                                 const uint64_t TransId,
                                  const account_id_type& Sender,
                                  const account_id_type& Receiver,
                                  const string& Data)
@@ -2961,11 +2960,7 @@ signed_transaction content_cancellation(string author,
          stx_pl.MethodType = MethodType;
          stx_pl.Sender = Sender;
          stx_pl.Receiver = Receiver;
-         stx_pl.TransId = TransId;
          stx_pl.Data = Data;
-
-         //auto itr = std::find(stx_send_method_type.begin(),stx_send_method_type.end(),stx_pl.MethodType);
-         //FC_ASSERT(itr != stx_send_method_type.end());
 
          custom_operation cust_op;
 
@@ -2981,7 +2976,7 @@ signed_transaction content_cancellation(string author,
 
          return sign_transaction(tx, true);
 
-      } FC_CAPTURE_AND_RETHROW((MethodType)(TransId)(Sender)(Receiver)(Data))
+      } FC_CAPTURE_AND_RETHROW((MethodType)(Sender)(Receiver)(Data))
    }
 
    vector<stx_object> recv_trans(const string& MethodType, const string& Param)
@@ -2994,14 +2989,6 @@ signed_transaction content_cancellation(string author,
          return _remote_db->get_stx_data_by_sender(object_id_type(Param), 100);
       else if( MethodType == stx_recv_method_type[1] )
          return _remote_db->get_stx_data_by_receiver(object_id_type(Param), 100);
-      else if( MethodType == stx_recv_method_type[2] )
-      {
-         optional<stx_object> obj = _remote_db->get_stx_data_by_transaction_id(stoll(Param));
-         vector<stx_object> result;
-         if( obj.valid() )
-            result.push_back(*obj);
-         return result;
-      }
    }
 
    string                  _wallet_filename;
@@ -4860,12 +4847,11 @@ void graphene::wallet::detail::submit_transfer_listener::package_seed_complete()
    }
 
    signed_transaction wallet_api::send_trans(const string& MethodType,
-                                             const uint64_t TransId,
                                              const account_id_type& Sender,
                                              const account_id_type& Receiver,
                                              const string& Data) const
    {
-      return my->send_trans(MethodType, TransId, Sender, Receiver, Data);
+      return my->send_trans(MethodType, Sender, Receiver, Data);
    }
 
    vector<stx_object> wallet_api::recv_trans(const string& MethodType, const string& Param) const

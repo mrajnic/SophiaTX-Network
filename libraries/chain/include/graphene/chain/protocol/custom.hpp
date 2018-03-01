@@ -46,22 +46,13 @@ namespace graphene { namespace chain {
                               const std::vector<char>& data, std::string& text, uint64_t nonce);
    };
 
-   const vector<string> stx_recv_method_type = {"recv_invoices_by_sender",
-                                                "recv_invoices_by_receiver",
-                                                "recv_invoice_by_id"};
+   const vector<string> stx_recv_method_type = {"recv_invoices_by_sender", "recv_invoices_by_receiver"};
 
    struct stx_payload {
       string MethodType;
-      uint64_t TransId;
       account_id_type Sender;
       account_id_type Receiver;
-
       string Data;
-      //public_key_type pub_from;
-      //public_key_type pub_to;
-      //uint64_t nonce = 0;
-
-      //string Class;
    };
 
    enum custom_operation_subtype : int;
@@ -126,6 +117,6 @@ namespace graphene { namespace chain {
 } } // namespace graphene::chain
 
 FC_REFLECT( graphene::chain::message_payload, (from)(to)(subtype)(data)(pub_from)(pub_to)(nonce) )
-FC_REFLECT( graphene::chain::stx_payload, (MethodType)(TransId)(Sender)(Receiver)(Data) )
+FC_REFLECT( graphene::chain::stx_payload, (MethodType)(Sender)(Receiver)(Data) )
 FC_REFLECT( graphene::chain::custom_operation::fee_parameters_type, (fee)(price_per_kbyte) )
 FC_REFLECT( graphene::chain::custom_operation, (fee)(payer)(required_auths)(id)(data) )

@@ -33,7 +33,6 @@ namespace graphene { namespace chain {
 void_result stx_evaluation::do_evaluate(const custom_operation& o)
 {
    try{
-
       stx_payload pl;
       o.get_stx_payload(pl);
 
@@ -43,7 +42,6 @@ void_result stx_evaluation::do_evaluate(const custom_operation& o)
       FC_ASSERT( pl.Sender != pl.Receiver );
       FC_ASSERT( o.payer == pl.Sender );
       FC_ASSERT( !pl.Data.empty() );
-      FC_ASSERT( pl.TransId > 0 );
 
       return void_result();
    }FC_CAPTURE_AND_RETHROW((o))
@@ -60,8 +58,8 @@ void_result stx_evaluation::do_apply(const custom_operation& o)
        obj.sender  = pl.Sender;
        obj.receiver = pl.Receiver;
        obj.created = d.head_block_time();
+       obj.block_num = d.head_block_num();
        obj.method_type = pl.MethodType;
-       obj.transaction_id = pl.TransId;
        obj.data = pl.Data;
     });
    return void_result();

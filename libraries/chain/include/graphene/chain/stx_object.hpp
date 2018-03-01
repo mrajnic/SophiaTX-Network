@@ -20,14 +20,13 @@ class stx_object : public graphene::db::abstract_object< stx_object >
          account_id_type sender;
          account_id_type receiver;
          string method_type;
-         uint64_t transaction_id;
          string data;
          time_point_sec created;
+         uint32_t block_num;
       };
 
       struct by_sender;
       struct by_receiver;
-      struct by_transaction_id;
 
       typedef multi_index_container<
       stx_object,
@@ -40,9 +39,6 @@ class stx_object : public graphene::db::abstract_object< stx_object >
       >,
       ordered_non_unique< tag< by_receiver>,
       member<stx_object, account_id_type, &stx_object::receiver>
-      >,
-      ordered_unique< tag< by_transaction_id>,
-      member<stx_object, uint64_t, &stx_object::transaction_id>
       >
       >
       >stx_object_multi_index_type;
@@ -51,4 +47,4 @@ class stx_object : public graphene::db::abstract_object< stx_object >
 
 }}
 
-FC_REFLECT_DERIVED(graphene::chain::stx_object, (graphene::db::object), (sender)(receiver)(method_type)(transaction_id)(data)(created) )
+FC_REFLECT_DERIVED(graphene::chain::stx_object, (graphene::db::object), (sender)(receiver)(method_type)(data)(created)(block_num) )
